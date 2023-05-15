@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from '@apollo/server/express4';
 // import { createConnection } from "typeorm";
-import { Post } from "./entities/Post";
+// import { Post } from "./entities/Post";
 // import path from "path";
 import express from "express";
 import { json } from "body-parser";
