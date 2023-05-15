@@ -1,0 +1,35 @@
+.container {
+  background: rgba(57, 57, 57, 0.5);
+}
+
+.input_form {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.input_form:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.input_form:nth-child(5) {
+  color: red;
+}
+
+.bg-transparent {
+  background: rgba(0, 0, 0, 0);
+}
+
+.text-opacity {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+input {
+  outline: none;
+}
+
+input::placeholder {
+  opacity: .45;
+}
+
+span {
+  display: block;
+}

@@ -1,0 +1,27 @@
+.woof {
+  @media screen and (max-width: 1150px) {
+    h1 {
+      margin-right: 1rem;
+    }
+
+    .itext {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    h1 {
+      font-size: 26px;
+      line-height: 30px;
+      margin-right: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+.sign {
+  @media screen and (max-width: 1150px) {
+    margin-right: 0.5rem;
+  }
+}
