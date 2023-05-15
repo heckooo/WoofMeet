@@ -1,4 +1,5 @@
-import { Resolver, Query } from "type-graphql";
+import { Post } from "src/entities/Post";
+import { Resolver, Query, Int } from "type-graphql";
 
 @Resolver()
 export class HelloResolver {

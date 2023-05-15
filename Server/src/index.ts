@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from '@apollo/server/express4';
 // import { createConnection } from "typeorm";
-// import { Post } from "./entities/Post";
+import { Post } from "./entities/Post";
 // import path from "path";
 import express from "express";
 import { json } from "body-parser";
@@ -34,8 +34,8 @@ const main = async () => {
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
   // const fork = orm.em.fork();
-  // const post = fork.create(Post, {createdAt: '2023-05-13', updatedAt: '2023-05-13', title: "fourth post"});
-  // await fork.persistAndFlush(post);
+  // // const post = fork.create(Post, {createdAt: '2023-05-13', updatedAt: '2023-05-13', title: "fourth post"});
+  // // await fork.persistAndFlush(post);
   // const posts = await fork.find(Post, {});
   // console.log(posts);
 
@@ -49,7 +49,7 @@ const main = async () => {
   await apolloServer.start();
   app.use('/graphql', json(),
   expressMiddleware(apolloServer, {
-    context: async () => ({ em: orm.em })
+    context: async () => ({ em: orm.em.fork() }),
   }),
   );
 
@@ -59,5 +59,5 @@ const main = async () => {
 };
 
 main().catch((err) => {
-  console.error(err);
+  console.error(err.message);
 });
