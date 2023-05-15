@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from '@apollo/server/express4';
 // import { createConnection } from "typeorm";
-import { Post } from "./entities/Post";
+// import { Post } from "./entities/Post";
 // import path from "path";
 import express from "express";
 import { json } from "body-parser";
@@ -11,6 +11,7 @@ import { HelloResolver } from "./resolvers/hello";
 import { MikroORM } from '@mikro-orm/core';
 import { __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
+import { PostResolver } from "./resolvers/post";
 //import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
@@ -32,26 +33,23 @@ const main = async () => {
  
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
-  const fork = orm.em.fork();
+  // const fork = orm.em.fork();
   // const post = fork.create(Post, {createdAt: '2023-05-13', updatedAt: '2023-05-13', title: "fourth post"});
   // await fork.persistAndFlush(post);
-  const posts = await fork.find(Post, {});
-  console.log(posts);
+  // const posts = await fork.find(Post, {});
+  // console.log(posts);
 
   const app = express();
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
+      resolvers: [HelloResolver, PostResolver],
       validate: false,
     }),
   });
   await apolloServer.start();
   app.use('/graphql', json(),
   expressMiddleware(apolloServer, {
-    context: async ({ req, res }) => ({
-      req, 
-      res,
-    })
+    context: async () => ({ em: orm.em })
   }),
   );
 
