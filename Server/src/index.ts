@@ -2,16 +2,15 @@ import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from '@apollo/server/express4';
 // import { createConnection } from "typeorm";
-// import { Post } from "./entities/Post";
-// import path from "path";
+  // import path from "path";
 import express from "express";
 import { json } from "body-parser";
 import { buildSchema } from "type-graphql";
-import { HelloResolver } from "./resolvers/hello";
 import { MikroORM } from '@mikro-orm/core';
 import { __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
 import { PostResolver } from "./resolvers/post";
+import { UserResolver } from "./resolvers/user";
 //import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
@@ -42,7 +41,7 @@ const main = async () => {
   const app = express();
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver],
+      resolvers: [UserResolver, PostResolver],
       validate: false,
     }),
   });

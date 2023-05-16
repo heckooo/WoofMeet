@@ -1,6 +1,7 @@
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
 import { Post } from "./entities/Post";
+import { User } from "./entities/User";
 import path from "path";
 
 export default {
@@ -9,7 +10,7 @@ export default {
   user: 'postgres',
   password: 'pass',
   debug: !__prod__,
-  entities: [Post],
+  entities: [Post, User],
   migrations: {
     path: path.join(__dirname, "./migrations"),
     glob: '!(*.d).{js,ts}',
