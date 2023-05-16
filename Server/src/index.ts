@@ -1,8 +1,6 @@
 import "reflect-metadata";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from '@apollo/server/express4';
-// import { createConnection } from "typeorm";
-  // import path from "path";
 import express from "express";
 import { json } from "body-parser";
 import { buildSchema } from "type-graphql";
@@ -11,34 +9,40 @@ import { __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-//import { PostResolver } from "./resolvers/post";
+import session from "express-session";
+import { createClient } from "redis";
+import RedisStore from "connect-redis";
 
 const main = async () => {
-  // const conn = await createConnection({
-  //   type: "postgres",
-  //   //url: process.env.DATABASE_URL,
-  //   host: "localhost",
-  //   port: 5432,
-  //   username: "postgres",
-  //   password: "pass",
-  //   database: "woof",
-  //   logging: true,
-  //   // migrationsRun: true,
-  //   // synchronize: true,
-  //   migrations: [path.join(__dirname, "./migrations/*")],
-  //   entities: [Post],
-  // });
-  // await conn.runMigrations();
- 
+
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
-  // const fork = orm.em.fork();
-  // // const post = fork.create(Post, {createdAt: '2023-05-13', updatedAt: '2023-05-13', title: "fourth post"});
-  // // await fork.persistAndFlush(post);
-  // const posts = await fork.find(Post, {});
-  // console.log(posts);
 
   const app = express();
+
+  const redisClient = createClient();
+  redisClient.connect().catch(console.error);
+  const redisStore = new RedisStore({
+    client: redisClient,
+    disableTouch: true,
+  });
+
+  app.use(
+    session({
+      name: "saf",
+      store: redisStore,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 Year
+        httpOnly: true,
+        sameSite: "lax",
+        secure: __prod__,
+      },
+      resave: false,
+      saveUninitialized: false,
+      secret: "qwhfuhwafdjbewjqwe",
+    })
+  );
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver, PostResolver],
@@ -46,9 +50,10 @@ const main = async () => {
     }),
   });
   await apolloServer.start();
+
   app.use('/graphql', json(),
   expressMiddleware(apolloServer, {
-    context: async () => ({ em: orm.em.fork() }),
+    context: async ({ req, res }) => ({ em: orm.em.fork(), req, res }),
   }),
   );
 
