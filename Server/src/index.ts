@@ -15,7 +15,6 @@ import cors from "cors";
 import expressSession from "express-session";
 
 const main = async () => {
-
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
 

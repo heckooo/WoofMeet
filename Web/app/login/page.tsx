@@ -16,9 +16,9 @@ const Login: React.FC<{}> = ({ }) => {
   return (
     <div className="h-[100vh] flex items-center justify-center bg-white text-black">
       <Formik
-        initialValues={{ username: "", password: "", }}
+        initialValues={{ usernameOrEmail: "", password: "", }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await login({options: values});
+          const response = await login(values);
           console.log(response);
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
@@ -32,7 +32,7 @@ const Login: React.FC<{}> = ({ }) => {
           <Form className="flex flex-col">
             {/* <Field id="username" name="username" placeholder="Username" className="p-2" />
             <Field id="password" name="password" type="password" placeholder="Password" className="p-2" /> */}
-            <InputField name="username" placeholder="Username" />
+            <InputField name="usernameOrEmail" placeholder="Username or Email" />
             <InputField  type="password" name="password" placeholder="Password"/>
             <LoadingButton 
               type="submit" 

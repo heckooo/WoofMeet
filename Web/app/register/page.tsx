@@ -16,7 +16,7 @@ const Register: React.FC<{}> = ({ }) => {
   return (
     <div className="h-[100vh] flex items-center justify-center bg-white text-black">
       <Formik
-        initialValues={{ username: "", password: "", }}
+        initialValues={{ username: "", email: "", password: "", }}
         onSubmit={async (values, { setErrors }) => {
           const response = await register({options: values});
           console.log(response);
@@ -33,6 +33,7 @@ const Register: React.FC<{}> = ({ }) => {
             {/* <Field id="username" name="username" placeholder="Username" className="p-2" />
             <Field id="password" name="password" type="password" placeholder="Password" className="p-2" /> */}
             <InputField name="username" placeholder="Username" />
+            <InputField name="email" placeholder="Email" />
             <InputField  type="password" name="password" placeholder="Password"/>
             <LoadingButton 
               type="submit" 
