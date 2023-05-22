@@ -11,10 +11,10 @@ interface pageProps {
 const Home: React.FC<pageProps> = ({}) => {
   return (
     <>
-    <Navbar />
-    <Content />
-    <Form />
-    <Footer />
+      <Navbar />
+      <Content />
+      <Form />
+      <Footer />
     </>
   );
 }

@@ -23,10 +23,6 @@ let arrow_down: React.JSX.Element = <KeyboardArrowDownIcon className="ml-2"/>
 const Form: React.FC<FormProps> = ({}) => {
   //false -> dog | true -> cat
   const [choosePet, setChoosePet] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log('Is Cat: ', choosePet);
-  }, [choosePet])
   
   return (
     <div className="flex justify-center items-center flex-col rounded-2xl container w-4/5 xl:w-3/5 xl:py-12 mx-auto mt-16 p-8 mb-12">

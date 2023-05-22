@@ -1,70 +1,52 @@
 "use client"
-import React, { useState, useEffect } from 'react';
-import { Button, TextField } from '@mui/material';
+import { Form, Formik } from 'formik';
+import React from 'react';
+import { LoadingButton } from '@mui/lab';
+import { useLoginMutation } from '../generated/graphql';
+import { toErrorMap } from '@/utils/toErrorMap';
+import { useRouter } from 'next/navigation';
+import { InputField } from '../../components/InputField';
 import Link from 'next/link';
-import { useUser } from '@/lib/hooks';
-import Router from 'next/router';
-import Layout from '../layout';
+import { withUrqlClient } from 'next-urql';
+import { createUrqlClient } from '@/utils/createUrqlClient';
 
-interface IProps {
-  username: string;
-  password: string;
-}
-
-const Login: React.FC<IProps> = ({}) => {
-  const [errorMsg, setErrorMsg] = useState<string>("");
-  const [user, { mutate }] = useUser();
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    const body = {
-      username: e.currentTarget.username.value,
-      password: e.currentTarget.password.value,
-    };
-
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify(body)
-    })
-
-    if (res.status === 200) {
-      const userObj = await res.json();
-      mutate(userObj);
-    } else {
-      setErrorMsg('Incorect username or password');
-    }
-  }
-
-  useEffect(() => {
-    // redirect to home if user is authenticated
-    if (user) Router.push('/');
-  }, [user])
-  
+const Login: React.FC<{}> = ({ }) => {
+  const router = useRouter();
+  const [,login] = useLoginMutation()
   return (
-    <Layout title="Sign In">
-    <div>
-      <h1>Register</h1>
-      {!errorMsg ? null : <h1>{errorMsg}</h1>}
-      <form className="flex flex-col bg-white p-4 items-center align-center" onSubmit={onSubmit} noValidate>
-        <TextField
-          name="username"
-          label="Username"
-          required
-        />
-        <TextField 
-          type="password"
-          label="Password"
-          required
-        />
-        <Button type="submit">Sign In</Button>
-      </form>
-      <Link href="/">Home</Link>
-      <Link href="/register">Don't have an account?</Link>
+    <div className="h-[100vh] flex items-center justify-center bg-white text-black">
+      <Formik
+        initialValues={{ username: "", password: "", }}
+        onSubmit={async (values, { setErrors }) => {
+          const response = await login({options: values});
+          console.log(response);
+          if (response.data?.login.errors) {
+            setErrors(toErrorMap(response.data.login.errors));
+          } else if (response.data?.login.user) {
+            //Worked properly
+            router.push("/");
+          }
+        }}
+      >
+        {({ isSubmitting }) => (
+          <Form className="flex flex-col">
+            {/* <Field id="username" name="username" placeholder="Username" className="p-2" />
+            <Field id="password" name="password" type="password" placeholder="Password" className="p-2" /> */}
+            <InputField name="username" placeholder="Username" />
+            <InputField  type="password" name="password" placeholder="Password"/>
+            <LoadingButton 
+              type="submit" 
+              loading={isSubmitting}
+              className="mt-4"
+            >
+              Login
+            </LoadingButton>
+            <Link href="/register">Don't have an account?</Link>
+          </Form>
+        )}
+      </Formik>
     </div>
-    </Layout>
   );
 }
 
-export default Login;
+export default withUrqlClient(createUrqlClient)(Login);

@@ -1,7 +1,8 @@
 import { User } from "../entities/User";
-import { Resolver, Mutation, Field, InputType, Ctx, Arg, ObjectType } from "type-graphql";
+import { Resolver, Mutation, Field, InputType, Ctx, Arg, ObjectType, Query } from "type-graphql";
 import { MyContext } from '../types';
 import argon2 from "argon2";
+import { COOKIE_NAME } from "../constants";
 
 @InputType()
 class UsernamePasswordInput {
@@ -30,10 +31,23 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User, { nullable: true })
+  async me(
+    @Ctx() {req, em }: MyContext
+  ): Promise<User | null> {
+    if (!req.session.userId) {
+      return null;
+    }
+
+    const user = await em.findOne(User, { id: req.session.userId });
+
+    return user;
+  }
+
  @Mutation(() => UserResponse) 
    async register(
     @Arg("options") options: UsernamePasswordInput,
-    @Ctx() {em}: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     if (options.username.length <= 2) {
       return {
@@ -70,6 +84,8 @@ export class UserResolver {
         }
       }
     }
+    // Keeps user logged in after registration
+    req.session.userId = user.id;
 
     return { user };
   }
@@ -100,7 +116,23 @@ export class UserResolver {
     }
 
     req.session.userId = user.id;
+    console.log(req.session);
 
     return { user };
   } 
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) => 
+    req.session.destroy((err) => {
+      res.clearCookie(COOKIE_NAME);
+      if (err) {
+        console.log(err.message);
+        resolve(false);
+        return;
+      }
+
+      resolve(true);
+    }));
+  }
 } 

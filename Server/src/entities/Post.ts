@@ -1,6 +1,9 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { Field, Int, ObjectType } from "type-graphql";
 
+type Pet = "dog" | "cat";
+
+
 @ObjectType()
 @Entity()
 export class Post {
@@ -8,15 +11,19 @@ export class Post {
   @PrimaryKey()
   id!: number;
 
-  @Field(() => String)
-  @Property({ type: "date", nullable: true })
-  createdAt?: Date = new Date();
+  @Field(() => Boolean)
+  @Property({ type: "boolean" })
+  pet!: boolean;
 
   @Field(() => String)
-  @Property({ type: "date", onUpdate: () => new Date(), nullable: true })
-  updatedAt?: Date = new Date();
+  @Property({ type: "date" })
+  dropOff?: Date = new Date();
+
+  @Field(() => String)
+  @Property({ type: "date" })
+  pickUp?: Date = new Date();
 
   @Field()
-  @Property({ type: "text" })
+  @Property({ type: "text"})
   title!: string;
 }
