@@ -13,10 +13,12 @@ import { createClient } from "redis";
 import RedisStore from "connect-redis";
 import cors from "cors";
 import expressSession from "express-session";
+import Redis from "ioredis";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
+  const redis = new Redis();
 
   const app = express();
 
@@ -62,7 +64,7 @@ const main = async () => {
   app.use('/graphql',
   json(),
   expressMiddleware(apolloServer, {
-    context: async ({ req, res }) => ({ em: orm.em.fork(), req, res }),
+    context: async ({ req, res }) => ({ em: orm.em.fork(), req, res, redis }),
   }),
   );
 

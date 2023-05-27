@@ -1,0 +1,15 @@
+.container {
+  background: rgba(57, 57, 57, 0.5);
+}
+
+.form_input {
+  background: rgba(0, 0, 0, 0.5);
+  margin-right: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.form_input:hover {
+  background: rgba(0, 0, 0, 0.7);
+}

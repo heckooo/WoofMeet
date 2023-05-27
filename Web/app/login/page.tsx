@@ -41,6 +41,7 @@ const Login: React.FC<{}> = ({ }) => {
             >
               Login
             </LoadingButton>
+            <Link href="/forgot-password">Forgot password?</Link>
             <Link href="/register">Don't have an account?</Link>
           </Form>
         )}
