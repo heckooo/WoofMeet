@@ -18,26 +18,49 @@ export class PostResolver {
 
   @Mutation(() => Post)
   async createPost(
-    @Arg("title") title: string,
+    @Arg("pet") pet: string,
+    @Arg("accomodation") accomodation: string,
+    @Arg("address") address: string,
+    @Arg("dropOff") dropOff: Date,
+    @Arg("pickUp") pickUp: Date,
+    @Arg("size") size: string,
     @Ctx() {em}: MyContext): Promise<Post> {
-    const post = em.create(Post, {title});
-    await em.persistAndFlush(post);
+    const post = em.create(Post, {pet, accomodation, address, size, dropOff, pickUp });
+
+    try {
+      await em.persistAndFlush(post);
+    } catch (err) {
+      console.log(err.message);
+    }
     return post;
   } 
 
   @Mutation(() => Post, { nullable: true })
   async updatePost(
     @Arg("id", () => Int) id: number,
-    @Arg("title") title: string,
+    @Arg("pet") pet: string,
+    @Arg("accomodation") accomodation: string,
+    @Arg("address") address: string,
+    @Arg("dropOff") dropOff: Date,
+    @Arg("pickUp") pickUp: Date,
+    @Arg("size") size: string,
     @Ctx() {em}: MyContext): Promise<Post | null> {
     const post = await em.findOne(Post, {id});
     if(!post) {
       return null;
     }
-    if (typeof title !== undefined) {
-      post.title = title;
-      await em.persistAndFlush(post);
+ 
+    post.pet = pet;
+    post.accomodation = accomodation;
+    post.address = address;
+    post.dropOff = dropOff;
+    post.pickUp = pickUp;
+    if (typeof size !== undefined) {
+      post.size = size;
     }
+
+    await em.persistAndFlush(post);
+
     return post;
   } 
 
