@@ -1,3 +1,4 @@
+import Footer from '@/components/Footer/Footer';
 import './globals.css'
 import { Quicksand } from 'next/font/google';
 
@@ -11,6 +12,7 @@ export default function RootLayout({ children, title = "Woof Meets" }: { childre
         </head>
         <body className={quick.className}>
           {children}
+          <Footer />
         </body>
       </html>
   )

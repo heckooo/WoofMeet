@@ -14,7 +14,7 @@ const Register: React.FC<{}> = ({ }) => {
   const router = useRouter();
   const [,register] = useRegisterMutation()
   return (
-    <div className="h-[100vh] flex items-center justify-center bg-white text-black">
+    <div className="flex items-center align-center justify-center h-[100vh]">
       <Formik
         initialValues={{ username: "", email: "", password: "", }}
         onSubmit={async (values, { setErrors }) => {
@@ -38,7 +38,7 @@ const Register: React.FC<{}> = ({ }) => {
             <LoadingButton 
               type="submit" 
               loading={isSubmitting}
-              className="mt-4"
+              className="my-4 bg-[#FFB800] rounded-lg text-3xl text-800 px-14 py-2 text-white"
             >
               Register
             </LoadingButton>

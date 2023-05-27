@@ -10,17 +10,18 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useChangePasswordMutation } from '../../generated/graphql';
 
-function ChangePassword({ params }: { params: { token: string }}) {
-// const ChangePassword: NextPage<{token: string}> = ({ token }) => {
+function ChangePassword({ params }: { params: { token: string } }) {
+  // const ChangePassword: NextPage<{token: string}> = ({ token }) => {
   const router = useRouter();
-  const [,changePassword] = useChangePasswordMutation();
+  const [, changePassword] = useChangePasswordMutation();
   const [tokenError, setTokenError] = useState("");
 
   return (
-    <div className="h-[100vh] flex items-center justify-center bg-white text-black">      <Formik
-        initialValues={{ newPassword: "",}}
+    <div className="flex items-center align-center justify-center h-[100vh]">
+      <Formik
+        initialValues={{ newPassword: "", }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await changePassword({ 
+          const response = await changePassword({
             newPassword: values.newPassword,
             token: params.token,
           });
@@ -40,15 +41,15 @@ function ChangePassword({ params }: { params: { token: string }}) {
         {({ isSubmitting }) => (
           <Form className="flex flex-col">
             <InputField type="password" name="newPassword" placeholder="New Password" />
-            {tokenError ? 
-            <div className="flex flex-col text-lg font-semibold">
-              <h1 className="text-[#c00]">{tokenError}</h1>
-              <Link className="underline" href="/forgot-password">Retry password reset</Link>
-            </div> : null}
+            {tokenError ?
+              <div className="flex flex-col text-lg font-semibold">
+                <h1 className="text-[#c00]">{tokenError}</h1>
+                <Link className="underline" href="/forgot-password">Retry password reset</Link>
+              </div> : null}
             <LoadingButton
               type="submit"
               loading={isSubmitting}
-              className="mt-4"
+              className="my-4 bg-[#FFB800] rounded-lg text-3xl text-800 px-14 py-2 text-white"
             >
               Change
             </LoadingButton>

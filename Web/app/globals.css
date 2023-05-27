@@ -29,3 +29,15 @@ html, body {
   color: white;
   min-height: 100%;
 }
+
+.authentication_container {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rem;
+  margin-bottom: 20rem;
+  height: 100vh;
+  border-radius: 1rem;
+  background: rgba(57, 57, 57, 0.5);
+}

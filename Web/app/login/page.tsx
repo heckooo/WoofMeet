@@ -14,7 +14,7 @@ const Login: React.FC<{}> = ({ }) => {
   const router = useRouter();
   const [,login] = useLoginMutation()
   return (
-    <div className="h-[100vh] flex items-center justify-center bg-white text-black">
+    <div className="flex items-center align-center justify-center h-[100vh]">
       <Formik
         initialValues={{ usernameOrEmail: "", password: "", }}
         onSubmit={async (values, { setErrors }) => {
@@ -30,14 +30,12 @@ const Login: React.FC<{}> = ({ }) => {
       >
         {({ isSubmitting }) => (
           <Form className="flex flex-col">
-            {/* <Field id="username" name="username" placeholder="Username" className="p-2" />
-            <Field id="password" name="password" type="password" placeholder="Password" className="p-2" /> */}
             <InputField name="usernameOrEmail" placeholder="Username or Email" />
             <InputField  type="password" name="password" placeholder="Password"/>
             <LoadingButton 
               type="submit" 
               loading={isSubmitting}
-              className="mt-4"
+              className="my-4 bg-[#FFB800] rounded-lg text-3xl text-800 px-14 py-2 text-white"
             >
               Login
             </LoadingButton>

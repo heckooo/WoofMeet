@@ -10,7 +10,7 @@ const Home: React.FC<{}> = ({}) => {
       <Navbar />
       <Content />
       <Form />
-      <Footer />
+      
     </>
   );
 }
