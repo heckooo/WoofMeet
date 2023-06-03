@@ -1,0 +1,15 @@
+mutation CreatePost($options: PostInputs!) {
+  createPost(options: $options) {
+    errors {
+      ...ErrorFragment
+    }
+    post {
+      pet
+      address
+      accomodation
+      dropOff
+      pickUp
+      size
+    }
+  }
+}

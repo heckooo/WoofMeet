@@ -43,9 +43,9 @@ const Navbar: React.FC<{}> = ({ }) => {
   return (
     <div className="px-5 py-5 flex justify-between flex-row w-full">
       <div className="flex flex-row items-center woof">
-        <h1 className="font-semibold text-[40px] leading-[50px] text-[#FFB800]">
+        <Link href="/" className="font-semibold text-[40px] leading-[50px] text-[#FFB800]">
           Woof Meets
-        </h1>
+        </Link>
         <Itext icon={<FavoriteIcon />} text={"Become Sitter"} />
         <Itext icon={<SearchIcon />} text={"Search Sitter"} />
       </div>

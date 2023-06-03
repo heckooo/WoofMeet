@@ -1,5 +1,6 @@
-import { DateType, Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, ManyToMany, PrimaryKey, Property, Rel } from "@mikro-orm/core";
 import { Field, Int, ObjectType } from "type-graphql";
+import { User } from "./User";
 
 @ObjectType()
 @Entity()
@@ -29,12 +30,12 @@ export class Post {
   address!: string;
 
   @Field(() => String)
-  @Property({ type: DateType, nullable: true  })
-  dropOff?: Date;
+  @Property({ nullable: true  })
+  dropOff?: string;
 
   @Field(() => String)
-  @Property({ type: DateType, nullable: true })
-  pickUp?: Date;
+  @Property({ nullable: true })
+  pickUp?: string;
 
   @Field(() => String)
   @Property({ type: "text "})

@@ -64,23 +64,21 @@
         },
         "drop_off": {
           "name": "drop_off",
-          "type": "timestamptz(0)",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
+          "mappedType": "string"
         },
         "pick_up": {
           "name": "pick_up",
-          "type": "timestamptz(0)",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
+          "mappedType": "string"
         },
         "size": {
           "name": "size",

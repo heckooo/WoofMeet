@@ -1,6 +1,17 @@
 import { MyContext } from "src/types";
 import { Post } from "../entities/Post";
-import { Resolver, Query, Ctx, Arg, Int, Mutation } from "type-graphql";
+import { Resolver, Query, Ctx, Arg, Int, Mutation, Field, ObjectType } from "type-graphql";
+import { FieldError } from "../utils/FieldError";
+import { PostInputs } from '../utils/PostInputs';
+
+@ObjectType()
+class PostResponse {
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
+
+  @Field(() => Post, { nullable: true })
+  post?: Post;
+}
 
 @Resolver()
 export class PostResolver {
@@ -16,52 +27,45 @@ export class PostResolver {
     return em.findOne(Post, {id});
   }
 
-  @Mutation(() => Post)
+  @Mutation(() => PostResponse)
   async createPost(
-    @Arg("pet") pet: string,
-    @Arg("accomodation") accomodation: string,
-    @Arg("address") address: string,
-    @Arg("dropOff") dropOff: Date,
-    @Arg("pickUp") pickUp: Date,
-    @Arg("size") size: string,
-    @Ctx() {em}: MyContext): Promise<Post> {
-    const post = em.create(Post, {pet, accomodation, address, size, dropOff, pickUp });
-
+    @Arg("options") options: PostInputs,
+    @Ctx() {em}: MyContext): Promise<PostResponse> {    
+    const post = em.create(Post, {pet: options.pet, accomodation: options.accomodation, address: options.address, size: options.size, 
+      dropOff: options.dropOff, pickUp: options.pickUp
+    });
+    
     try {
       await em.persistAndFlush(post);
+      console.log(post);
     } catch (err) {
-      console.log(err.message);
+      console.log("Error: ", err.message);
     }
-    return post;
-  } 
+    return { post };
+  }
 
-  @Mutation(() => Post, { nullable: true })
+  @Mutation(() => PostResponse, { nullable: true })
   async updatePost(
+    @Arg("options") options: PostInputs,
     @Arg("id", () => Int) id: number,
-    @Arg("pet") pet: string,
-    @Arg("accomodation") accomodation: string,
-    @Arg("address") address: string,
-    @Arg("dropOff") dropOff: Date,
-    @Arg("pickUp") pickUp: Date,
-    @Arg("size") size: string,
-    @Ctx() {em}: MyContext): Promise<Post | null> {
+    @Ctx() {em}: MyContext): Promise<PostResponse | null> {
     const post = await em.findOne(Post, {id});
     if(!post) {
       return null;
     }
  
-    post.pet = pet;
-    post.accomodation = accomodation;
-    post.address = address;
-    post.dropOff = dropOff;
-    post.pickUp = pickUp;
-    if (typeof size !== undefined) {
-      post.size = size;
+    post.pet = options.pet;
+    post.accomodation = options.accomodation;
+    post.address = options.address;
+    post.dropOff = options.dropOff;
+    post.pickUp = options.pickUp;
+    if (typeof options.size !== undefined) {
+      post.size = options.size;
     }
 
     await em.persistAndFlush(post);
 
-    return post;
+    return { post };
   } 
 
   @Mutation(() => Boolean)
