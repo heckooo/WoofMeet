@@ -1,0 +1,12 @@
+query Posts {
+  posts {
+    id
+    pet
+    accomodation
+    address
+    dropOff
+    pickUp
+    size
+    points
+  }
+}

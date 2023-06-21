@@ -1,14 +1,29 @@
-import { LoginMutation, MeQuery, MeDocument, RegisterMutation, LogoutMutation, ChangePasswordMutation } from "@/app/generated/graphql";
+import { LoginMutation, MeQuery, MeDocument, RegisterMutation, LogoutMutation, ChangePasswordMutation, LikeMutationVariables, LikesQueryVariables, LikeMutation, PostsQuery, LikesDocument, PostsDocument } from "@/app/generated/graphql";
 import { fetchExchange } from "urql";
-import { betterUpdateQuery } from "./betterUpdateQuery";
-import { cacheExchange } from "@urql/exchange-graphcache";
+import { betterUpdateQuery } from './betterUpdateQuery';
+import { cacheExchange, Cache } from "@urql/exchange-graphcache";
+
+function invalidateAllPosts(cache: Cache) {
+  const allFields = cache.inspectFields("Query");
+  const fieldInfos = allFields.filter((info) => info.fieldName === "posts");
+  fieldInfos.forEach((fi) => {
+    cache.invalidate("Query", "posts", fi.arguments || {});
+  });
+}
+
 
 export const createUrqlClient = (ssrExchange: any) => ({
     url: 'http://localhost:4000/graphql',
     exchanges: [cacheExchange({
       updates: {
         Mutation: {
-          login: (_result, args, cache, info) => {
+          like: (_result, args, cache, _info) => {
+            cache.invalidate({
+              __typename: "Post",
+              id: (args as LikeMutationVariables).postId,
+            });
+          },
+          login: (_result, _args, cache, _info) => {
             betterUpdateQuery<LoginMutation, MeQuery>(
               cache, 
               { query: MeDocument },
@@ -24,7 +39,7 @@ export const createUrqlClient = (ssrExchange: any) => ({
               }
             );
           },
-          register: (_result, args, cache, info) => {
+          register: (_result, _args, cache, _info) => {
             betterUpdateQuery<RegisterMutation, MeQuery>(
               cache, 
               { query: MeDocument },
@@ -40,7 +55,7 @@ export const createUrqlClient = (ssrExchange: any) => ({
               }
             );
           },
-          logout: (_result, args, cache, info) => {
+          logout: (_result, _args, cache, _info) => {
             betterUpdateQuery<LogoutMutation, MeQuery>(
               cache, 
               { query: MeDocument },
@@ -48,7 +63,7 @@ export const createUrqlClient = (ssrExchange: any) => ({
               () => ({ me: null })
             );
           },
-          changePassword: (_result, args, cache, info) => {
+          changePassword: (_result, _args, cache, _info) => {
             betterUpdateQuery<ChangePasswordMutation, MeQuery>(
               cache, 
               { query: MeDocument },
@@ -56,12 +71,15 @@ export const createUrqlClient = (ssrExchange: any) => ({
               () => ({ me: null })
             );
           },
+          createPost: (_result, _args, cache, _info) => {
+            invalidateAllPosts(cache);
+          },
         }
       }
     }), 
     ssrExchange,
     fetchExchange,
-],
+  ],
     fetchOptions: {
       credentials: "include" as const,
     },

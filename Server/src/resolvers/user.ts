@@ -8,6 +8,7 @@ import { validateRegister } from "../utils/validateRegister";
 import { sendEmail } from "../utils/sendEmail";
 import { v4 } from "uuid";
 import { FieldError } from "../utils/FieldError";
+import { RequiredEntityData } from "@mikro-orm/core";
 
 @ObjectType()
 class UserResponse {
@@ -121,7 +122,7 @@ export class UserResolver {
       username: options.username,
       email: options.email,
       password: hashedPassword,
-    });
+    } as RequiredEntityData<User>);
 
     try {
       await em.persistAndFlush(user);

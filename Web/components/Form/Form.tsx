@@ -7,17 +7,14 @@ import { SearchButton } from './SearchButton';
 import { FormInputs } from './FormInputs';
 import { Formik, Form } from 'formik';
 import { useCreatePostMutation, useMeQuery } from '../../app/generated/graphql';
-import { toErrorMap } from '../../utils/toErrorMap';
 import { withUrqlClient } from 'next-urql';
 import { createUrqlClient } from '../../utils/createUrqlClient';
-import { useRouter } from 'next/navigation';
 
 import "./styles.scss";
 
 const orange: string = '#FFB800';
 
 const Post_Form: React.FC<{}> = ({ }) => {
-  const router = useRouter();
   const [choosePet, setChoosePet] = useState<boolean>(false);
   const [isLogged, setIsLogged] = useState<boolean>(true);
   const [, createPost] = useCreatePostMutation();

@@ -1,0 +1,6 @@
+query Likes {
+  likes {
+    userId
+    postId
+  }
+}

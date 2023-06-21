@@ -14,11 +14,17 @@ import RedisStore from "connect-redis";
 import cors from "cors";
 import expressSession from "express-session";
 import Redis from "ioredis";
+import { LikeResolver } from "./resolvers/like";
+// import { Post } from "./entities/Post";
+// import { Like } from "./entities/Like";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
   const redis = new Redis();
+
+  // orm.em.nativeDelete(Post, {id: 43});
+  // orm.em.nativeDelete(Like, {});
 
   const app = express();
 
@@ -54,7 +60,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, PostResolver],
+      resolvers: [UserResolver, PostResolver, LikeResolver],
       validate: false,
 
     }),
