@@ -1,6 +1,6 @@
 import { MyContext } from "src/types";
 import { Post } from "../entities/Post";
-import { Resolver, Query, Ctx, Arg, Int, Mutation, UseMiddleware, FieldResolver, Root} from "type-graphql";
+import { Resolver, Query, Ctx, Arg, Int, Mutation, UseMiddleware } from "type-graphql";
 import { PostInputs } from '../utils/PostInputs';
 import { isAuth } from "../middleware/isAuth";
 import { RequiredEntityData } from "@mikro-orm/core";
@@ -20,14 +20,6 @@ export class PostResolver {
     @Ctx() {em}: MyContext): Promise<Post | null> {
     return em.findOne(Post, {id});
   }
-
-  // @FieldResolver(() => Boolean, { nullable: true })
-  // async likeStatus(
-  //   @Root() post: Post,
-  //   @Ctx() { }
-  // ) {
-  //   // Kick off from here
-  // }
 
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)

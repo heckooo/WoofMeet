@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv-safe/config";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from '@apollo/server/express4';
 import express from "express";
@@ -15,16 +16,11 @@ import cors from "cors";
 import expressSession from "express-session";
 import Redis from "ioredis";
 import { LikeResolver } from "./resolvers/like";
-// import { Post } from "./entities/Post";
-// import { Like } from "./entities/Like";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
   const redis = new Redis();
-
-  // orm.em.nativeDelete(Post, {id: 43});
-  // orm.em.nativeDelete(Like, {});
 
   const app = express();
 
@@ -37,7 +33,7 @@ const main = async () => {
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
@@ -54,7 +50,7 @@ const main = async () => {
       }, 
       resave: false,
       saveUninitialized: false,
-      secret: "qwhfuhwafdjbewjqwe",
+      secret: process.env.SESSION_SECRET,
     })
   );
 
@@ -74,8 +70,10 @@ const main = async () => {
   }),
   );
 
-  app.listen(4000, () => {
-    console.log("server started on localhost:4000");
+  const port = parseInt(process.env.PORT) || 4000;
+
+  app.listen(port, () => {
+    console.log(`server started on localhost:${port}`);
   })
 };
 
